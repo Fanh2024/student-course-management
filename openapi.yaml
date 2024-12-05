@@ -1,0 +1,113 @@
+openapi: 3.1.0
+info:
+  title: Student Course Management API
+  description: API for managing groups and students in a course system.
+  version: 1.0.0
+servers:
+  - url: https://mockserver.swaggerhub.com/HEIFANHASINA/student-course-management/v1
+    description: Mock server for testing
+paths:
+  /groups:
+    get:
+      summary: Get all groups or filter by name or year
+      parameters:
+        - name: groupName
+          in: query
+          description: Filter by group name
+          schema:
+            type: string
+        - name: groupYear
+          in: query
+          description: Filter by year interval
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Group"
+    post:
+      summary: Create a new group
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Group"
+      responses:
+        "201":
+          description: Group created successfully
+    put:
+      summary: Update an existing group
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Group"
+      responses:
+        "200":
+          description: Group updated successfully
+    delete:
+      summary: Delete an existing group
+      parameters:
+        - name: id
+          in: query
+          description: ID of the group to delete
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Group deleted successfully
+
+  /students:
+    get:
+      summary: Get all students or filter by name
+      parameters:
+        - name: studentName
+          in: query
+          description: Filter by student name
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+    post:
+      summary: Create a new student
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Student"
+      responses:
+        "201":
+          description: Student created successfully
+    put:
+      summary: Update an existing student
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Student"
+      responses:
+        "200":
+          description: Student updated successfully
+    delete:
+      summary: Delete an existing student
+      parameters:
+        - name: id
+          in: query
+          description: ID of the student to delete
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Student deleted successfully
