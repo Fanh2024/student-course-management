@@ -1,0 +1,164 @@
+openapi: 3.1.0
+info:
+  title: Student Course Management API
+  version: 1.0.0
+  description: API for managing groups and students in a course management system.
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+paths:
+  /groups:
+    get:
+      summary: Get list of groups
+      operationId: getGroups
+      parameters:
+        - name: groupName
+          in: query
+          description: Filter by group name
+          required: false
+          schema:
+            type: string
+        - name: groupYear
+          in: query
+          description: Filter by a range of group years
+          required: false
+          schema:
+            type: string
+            example: 2022-2024
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Group"
+    post:
+      summary: Create a new group
+      operationId: createGroup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Group"
+      responses:
+        "201":
+          description: Group created
+    put:
+      summary: Update a group
+      operationId: updateGroup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Group"
+      responses:
+        "200":
+          description: Group updated
+    delete:
+      summary: Delete a group
+      operationId: deleteGroup
+      responses:
+        "204":
+          description: Group deleted
+
+  /students:
+    get:
+      summary: Get list of students
+      operationId: getStudents
+      parameters:
+        - name: studentName
+          in: query
+          description: Filter by student name
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Student"
+    post:
+      summary: Create a new student
+      operationId: createStudent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Student"
+      responses:
+        "201":
+          description: Student created
+    put:
+      summary: Update a student
+      operationId: updateStudent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Student"
+      responses:
+        "200":
+          description: Student updated
+    delete:
+      summary: Delete a student
+      operationId: deleteStudent
+      responses:
+        "204":
+          description: Student deleted
+
+components:
+  schemas:
+    Group:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "G1"
+        groupName:
+          type: string
+          example: "J2"
+        groupYear:
+          type: string
+          example: "2023"
+        promotion:
+          type: string
+          enum: [G, H, J, K]
+        studentNb:
+          type: integer
+          example: 30
+        students:
+          type: array
+          items:
+            $ref: "#/components/schemas/Student"
+    Student:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "STD23XXX"
+        name:
+          type: string
+          example: "John Doe"
+        sex:
+          type: string
+          enum: [M, F]
+        birthdate:
+          type: string
+          format: date
+          example: "2000-01-01"
+        reference:
+          type: string
+          example: "STD23XXX"
+        group:
+          type: string
+          example: "J2"
