@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Student Course Management API
-  version: 1.0.0
+  version: 2.0.0
   description: API for managing groups and students in a course management system.
 servers:
   - url: http://localhost:8080
@@ -11,20 +11,6 @@ paths:
     get:
       summary: Get list of groups
       operationId: getGroups
-      parameters:
-        - name: groupName
-          in: query
-          description: Filter by group name
-          required: false
-          schema:
-            type: string
-        - name: groupYear
-          in: query
-          description: Filter by a range of group years
-          required: false
-          schema:
-            type: string
-            example: 2022-2024
       responses:
         "200":
           description: Successful response
@@ -42,40 +28,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Group"
+              $ref: "#/components/schemas/CreateGroup"
       responses:
         "201":
           description: Group created
-    put:
-      summary: Update a group
-      operationId: updateGroup
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Group"
-      responses:
-        "200":
-          description: Group updated
-    delete:
-      summary: Delete a group
-      operationId: deleteGroup
-      responses:
-        "204":
-          description: Group deleted
 
   /students:
     get:
       summary: Get list of students
       operationId: getStudents
-      parameters:
-        - name: studentName
-          in: query
-          description: Filter by student name
-          required: false
-          schema:
-            type: string
       responses:
         "200":
           description: Successful response
@@ -93,28 +54,84 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Student"
+              $ref: "#/components/schemas/CreateStudent"
       responses:
         "201":
           description: Student created
+
+  /students/{studentId}/group:
     put:
-      summary: Update a student
-      operationId: updateStudent
+      summary: Update the group of a specific student
+      operationId: updateStudentGroup
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Student"
+              $ref: "#/components/schemas/Group"
       responses:
         "200":
-          description: Student updated
-    delete:
-      summary: Delete a student
-      operationId: deleteStudent
+          description: Student's group updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+
+  /students/group:
+    put:
+      summary: Update the groups of multiple students
+      operationId: updateMultipleStudentGroups
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  studentId:
+                    type: string
+                  group:
+                    $ref: "#/components/schemas/Group"
       responses:
-        "204":
-          description: Student deleted
+        "200":
+          description: List of students with updated groups
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Student"
+
+  /students/{studentId}/groups/{groupId}:
+    put:
+      summary: Associate a specific student with a specific group
+      operationId: associateStudentToGroup
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Student associated with the group
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
 
 components:
   schemas:
@@ -160,5 +177,20 @@ components:
           type: string
           example: "STD23XXX"
         group:
-          type: string
-          example: "J2"
+          $ref: "#/components/schemas/Group"
+    CreateGroup:
+      allOf:
+        - $ref: "#/components/schemas/Group"
+        - type: object
+          properties:
+            id:
+              type: string
+              example: null
+    CreateStudent:
+      allOf:
+        - $ref: "#/components/schemas/Student"
+        - type: object
+          properties:
+            id:
+              type: string
+              example: null
